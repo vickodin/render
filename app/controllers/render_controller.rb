@@ -12,7 +12,7 @@ class RenderController < ApplicationController
     @content = parser([], nil, @content)
     respond_to do |format|
       format.html {}
-      format.any  { render :text => 'not found', :status => 404 }
+      format.any  { render :text => '', :status => 404 }
     end
   end
 
