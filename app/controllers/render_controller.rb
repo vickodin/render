@@ -7,21 +7,22 @@ class RenderController < ApplicationController
   before_filter :find_user_site
 
   def show
-    @page = @site.pages.find_by_name!(params[:page])
-    @content = @page.content
-    @content = parser([], nil, @content)
     respond_to do |format|
-      format.html {}
+      format.html {
+        searcher(params[:page], 'html')
+      }
+      format.text {
+        searcher(params[:page], 'txt')
+      }
       format.any  { render :text => '', :status => 404 }
     end
   end
 
   def index
-    @index = @site.pages.where(:system => true).first!
-    @content = @index.content
-    @content = parser([], nil, @content)
     respond_to do |format|
-      format.html {}
+      format.html {
+        searcher('/', 'html')
+      }
       format.any  { render :text => 'not found', :status => 404 }
     end
   end
@@ -41,6 +42,12 @@ class RenderController < ApplicationController
   end
 
   private
+
+  def searcher name, kind
+    @page = @site.pages.find_by_name_and_kind!(name, kind)
+    @content = @page.content
+    @content = parser([], nil, @content)
+  end
 
   def parser stack, segment, content
     return "" unless content
