@@ -10,12 +10,20 @@ class RenderController < ApplicationController
     @page = @site.pages.find_by_name!(params[:page])
     @content = @page.content
     @content = parser([], nil, @content)
+    respond_to do |format|
+      format.html {}
+      format.any  { render :text => 'not found', :status => 404 }
+    end
   end
 
   def index
     @index = @site.pages.where(:system => true).first!
     @content = @index.content
     @content = parser([], nil, @content)
+    respond_to do |format|
+      format.html {}
+      format.any  { render :text => 'not found', :status => 404 }
+    end
   end
 
   def stylesheet
