@@ -22,7 +22,6 @@ class Page < ActiveRecord::Base
   validates :name, :format => {:with => /\A[^~`@#\$%^&*()\[\]{}+=|\\:;"'<>,.]+\z/}
   validates :kind, :inclusion => { :in => Page::KIND}
 
-  KIND   = [:html, :txt]
   extend Enumerize
   enumerize :kind, :in => Page::KIND, :predicates => true
 
