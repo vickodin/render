@@ -51,19 +51,19 @@ class RenderController < ApplicationController
 
   def parser stack, segment, content
     return "" unless content
-    return "<::deep includes::>" if stack.length > 10
-    return "<::includes error::>" if stack.include?(segment)
-    content.gsub!(/\s*<% +include +'?(.+?)'? +%>\s*/) do |template|
+    return "[::deep includes::]" if stack.length > 10
+    return "[::includes error::]" if stack.include?(segment)
+    content.gsub!(/\s*\[% +include +'?(.+?)'? +%\]\s*/) do |template|
       parser(stack.push(segment), $1, @t.content) if @t = @site.templates.find_by_name($1)
     end
-    if content =~ /\s*<% +layout +'?(.+?)'? +%>\s*/
+    if content =~ /\s*\[% +layout +'?(.+?)'? +%\]\s*/
       if @l = @site.layouts.find_by_name($1)
         layout = parser(stack.push(segment), "%#{$1}", @l.content)
         
-        layout.gsub!(/\s*<% +yield +%>\s*/, content)
+        layout.gsub!(/\s*\[% +yield +%\]\s*/, content)
         content = layout
       end
-      content.gsub!(/\s*<% +layout +'?(.+?)'? +%>\s*/, '')
+      content.gsub!(/\s*\[% +layout +'?(.+?)'? +%\]\s*/, '')
     end
     HtmlPress.press(content)
   end
