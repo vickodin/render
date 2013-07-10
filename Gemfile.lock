@@ -40,6 +40,8 @@ GEM
       csspool-st (= 3.1.2)
       json
     csspool-st (3.1.2)
+    enumerize (0.6.1)
+      activesupport (>= 3.2)
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
@@ -135,6 +137,7 @@ PLATFORMS
 
 DEPENDENCIES
   capistrano
+  enumerize
   html_press
   mysql2
   rails (= 3.2.12)
