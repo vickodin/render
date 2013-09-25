@@ -13,6 +13,7 @@ gem 'capistrano'
 gem 'rvm-capistrano'
 gem 'slim-rails'
 gem 'enumerize'
+gem 'therubyracer'
 
 # gem 'unicorn'
 
