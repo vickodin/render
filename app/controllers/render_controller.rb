@@ -41,6 +41,10 @@ class RenderController < ApplicationController
     end
   end
 
+  def favicon
+    send_file Rails.root.join('public', 'favicon', 'favicon.ico'), type: 'image/vnd.microsoft.icon', disposition: 'inline'
+  end
+
   private
 
   def searcher name, kind
