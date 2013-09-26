@@ -65,7 +65,8 @@ class RenderController < ApplicationController
       end
       content.gsub!(/\s*\[% +layout +['"]?(.+?)['"]? +%\]\s*/, '')
     end
-    HtmlPress.press(content)
+    content = HtmlPress.press(content) if @site.compress
+    content
   end
   
   def find_user_site
