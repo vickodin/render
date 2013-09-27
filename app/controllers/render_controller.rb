@@ -55,7 +55,7 @@ class RenderController < ApplicationController
 
   def parser stack, segment, content
     return "" unless content
-    return "[::deep includes::]" if stack.length > 10
+    return "[::deep includes(#{stack.join(',')})::]" if stack.length > 10
     return "[::includes error::]" if stack.include?(segment)
     content.gsub!(/\s*\[% +include +['"]?(.+?)['"]? +%\]\s*/) do |template|
       parser(stack.push(segment), $1, @t.content) if @t = @site.templates.find_by_name($1)
