@@ -49,8 +49,21 @@ class RenderController < ApplicationController
 
   def searcher name, kind
     @page = @site.pages.find_by_name_and_kind!(name, kind)
-    @content = @page.content
-    @content = parser([], nil, @content)
+    if @page.cacher
+      if @page.cacher.updated_at < @site.modified_at
+        @page.cacher.content = content_cacher(@page.content)
+        @page.cacher.save
+      end
+    else
+      @page.cacher = Cacher.new
+      @page.cacher.content = content_cacher(@page.content)
+      @page.cacher.save
+    end
+    @content = @page.cacher.content
+  end
+
+  def content_cacher(content)
+    parser([], nil, content)
   end
 
   def parser stack, segment, content

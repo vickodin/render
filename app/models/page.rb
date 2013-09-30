@@ -17,6 +17,8 @@ class Page < ActiveRecord::Base
 
   attr_accessible :content, :name, :kind
   belongs_to :site
+  has_one :cacher
+
   validates :name, :uniqueness => {:scope => [:site_id, :kind]}
   validates :name, :presence => true
   validates :name, :format => {:with => /\A[^~`@#\$%^&*()\[\]{}+=|\\:;"'<>,.]+\z/}
