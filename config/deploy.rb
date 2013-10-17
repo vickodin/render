@@ -20,7 +20,7 @@ set :user,          "devel"
 set :port,          22
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
-set :repository,  "ssh://git@bitbucket.org/vickodin/render.git"
+set :repository,  "git@github.com:vickodin/render.git"
 set :branch,      "master"
 
 # Deploy via github
