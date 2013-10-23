@@ -70,7 +70,7 @@ class Page < ActiveRecord::Base
     end
 
     # INFO: variable substitutions
-    content.gsub!(/\s*\[% += *(\w+) +%\]\s*/) do |value|
+    content.gsub!(/\[% += *(\w+) +%\]/) do |value|
       self.get_values_map($1)
     end
 
