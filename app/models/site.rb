@@ -19,9 +19,22 @@ class Site < ActiveRecord::Base
   belongs_to :user
   belongs_to :domain
 
-  has_many :stylesheets,  :dependent => :destroy
-  has_many :javascripts,  :dependent => :destroy
-  has_many :pages,        :dependent => :destroy
-  has_many :templates,    :dependent => :destroy
-  has_many :layouts,      :dependent => :destroy
+  has_many :stylesheets
+  has_many :javascripts
+  has_many :pages
+  has_many :templates
+  has_many :layouts
+  has_many :images
+
+  def full_name
+    if self.own_domain.blank?
+      self.name + '.' + self.domain.name
+    else
+      self.own_domain
+    end
+  end
+
+  def full_url
+    "http://#{self.full_name}"
+  end
 end
