@@ -3,7 +3,6 @@ class RenderController < ApplicationController
   require 'html_press'
 
   layout 'page'
-  skip_before_filter :require_login
   before_filter :find_user_site
 
   def show
