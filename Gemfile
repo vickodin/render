@@ -14,6 +14,7 @@ gem 'rvm-capistrano'
 gem 'slim-rails'
 gem 'enumerize'
 gem 'therubyracer'
+gem 'annotate'
 
 # gem 'unicorn'
 

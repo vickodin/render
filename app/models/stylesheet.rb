@@ -8,7 +8,6 @@
 #  updated_at :datetime         not null
 #  site_id    :integer
 #  name       :string(255)      default(""), not null
-#  slug       :string(255)
 #
 
 class Stylesheet < ActiveRecord::Base

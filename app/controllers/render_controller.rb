@@ -49,43 +49,9 @@ class RenderController < ApplicationController
 
   def searcher name, kind
     @page = @site.pages.find_by_name_and_kind!(name, kind)
-    if @page.cacher
-      if @page.cacher.updated_at < @site.modified_at
-        @page.cacher.content = content_cacher(@page.content)
-        @page.cacher.save
-      end
-    else
-      @page.cacher = Cacher.new
-      @page.cacher.content = content_cacher(@page.content)
-      @page.cacher.save
-    end
-    @content = @page.cacher.content
+    @content = @page.code
   end
 
-  def content_cacher(content)
-    parser([], nil, content)
-  end
-
-  def parser stack, segment, content
-    return "" unless content
-    return "[::deep includes(#{stack.join(',')})::]" if stack.length > 15
-    return "[::includes error::]" if stack.include?(segment)
-    content.gsub!(/\s*\[% +include +['"]?(.+?)['"]? +%\]\s*/) do |template|
-      parser(stack.push(segment), $1, @t.content) if @t = @site.templates.find_by_name($1)
-    end
-    if content =~ /\s*\[% +layout +['"]?(.+?)['"]? +%\]\s*/
-      if @l = @site.layouts.find_by_name($1)
-        layout = parser(stack.push(segment), "%#{$1}", @l.content)
-        
-        layout.gsub!(/\s*\[% +yield +%\]\s*/, content)
-        content = layout
-      end
-      content.gsub!(/\s*\[% +layout +['"]?(.+?)['"]? +%\]\s*/, '')
-    end
-    content = HtmlPress.press(content) if @site.compress
-    content
-  end
-  
   def find_user_site
     if @domain = Domain.find_by_name(request.domain)
       @site = @domain.sites.find_by_name!(request.subdomain(Subdomain.position))

@@ -9,51 +9,72 @@
 #  site_id    :integer
 #  content    :text
 #  system     :boolean          default(FALSE), not null
-#  slug       :string(255)
+#  kind       :string(255)      default("html"), not null
 #
 
 class Page < ActiveRecord::Base
-  KIND   = ['html', 'txt']
-
-  attr_accessible :content, :name, :kind
   belongs_to :site
   has_one :cacher
 
-  validates :name, :uniqueness => {:scope => [:site_id, :kind]}
-  validates :name, :presence => true
-  validates :name, :format => {:with => /\A[^~`@#\$%^&*()\[\]{}+=|\\:;"'<>,.]+\z/}
-  validates :kind, :inclusion => { :in => Page::KIND}
-
-  extend Enumerize
-  enumerize :kind, :in => Page::KIND, :predicates => true
-
-  def full_name
-    path = '/'
-    unless self.name == '/'
-      path = "/#{self.name}"
-      unless self.html?
-        path +='.'+self.kind
-      end
-    end
-    return path
+  def set_values_map(name, value)
+    @values_map = {} unless @values_map
+    @values_map[name] = value
+    return nil
   end
 
-  def public_name
-    if self.system && self.name == '/'
-      return 'Index page'
+  def get_values_map(name)
+    return @values_map[name] if @values_map
+    return ''
+  end
+
+  def code
+    if cacher
+      if cacher.updated_at < site.modified_at
+        self.compile
+      end
     else
-      unless self.html?
-        return "#{self.name}.#{self.kind}"
-      else
-        return self.name
-      end
+      self.compile
     end
+    cacher.content
   end
-  
-  def short_public_name
-    self.public_name.truncate(30)
+
+  def compile
+    self.cacher = Cacher.new unless cacher
+    cacher.content = self.parser([], nil, self.content)
+    cacher.save
   end
-  def full_url
-    "#{self.site.full_url}#{self.full_name}"
+
+  def parser stack, segment, content
+    return "" unless content
+    return "[::deep includes(#{stack.join(',')})::]" if stack.length > 30
+    return "[::includes error::]" if stack.include?(segment)
+
+    # INFO: variable setting
+    content.gsub!(/\s*\[% +(\w+) *= *['"]?(.+?)['"]? +%\]\s*/) do |value|
+      self.set_values_map("#{$1}", "#{$2}")
+    end
+
+    # INFO: includes
+    content.gsub!(/\s*\[% +include +['"]?(.+?)['"]? +%\]\s*/) do |template|
+      self.parser(stack.push(segment), $1, @t.content) if @t = self.site.templates.find_by_name($1)
+    end
+
+    # INFO: layouts
+    if content =~ /\s*\[% +layout +['"]?(.+?)['"]? +%\]\s*/
+      if @l = self.site.layouts.find_by_name($1)
+        layout = self.parser(stack.push(segment), "%#{$1}", @l.content)
+        layout.gsub!(/\s*\[% +yield +%\]\s*/, content)
+        content = layout
+      end
+      content.gsub!(/\s*\[% +layout +['"]?(.+?)['"]? +%\]\s*/, '')
+    end
+
+    # INFO: variable substitutions
+    content.gsub!(/\s*\[% += *(\w+) +%\]\s*/) do |value|
+      self.get_values_map($1)
+    end
+
+    content = HtmlPress.press(content) if self.site.compress
+    content
   end
 end
