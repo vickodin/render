@@ -37,7 +37,7 @@ class RenderController < ApplicationController
 
   def javascript
     @javascript = @site.javascripts.find_by_name!(params[:javascript])
-    @content = @javascript.code
+    @content = @javascript.content
 
     respond_to do |format|
       format.js
