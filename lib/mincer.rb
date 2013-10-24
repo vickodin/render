@@ -43,7 +43,7 @@ module Mincer
     end
 
     # INFO: images includes
-    content.gsub!(/\[% *image:(\w+) *%\]/) do |value|
+    content.gsub!(/\[% *image:([[:word:]\-]+) *%\]/) do |value|
       self.find_image($1)
     end
 
