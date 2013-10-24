@@ -1,2 +1,6 @@
 base_domain: "lvh.me"
 base_domains: ['lvh.me', 'ver2.ru', 'webwhs.com']
+
+aws_access_key_id: 'AKIAIKYKLUWSLVAGO7GA'
+aws_secret_access_key: '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'
+fog_directory: 'dev-simplepage'

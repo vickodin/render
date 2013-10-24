@@ -28,6 +28,8 @@ class RenderController < ApplicationController
 
   def stylesheet
     @stylesheet = @site.stylesheets.find_by_name!(params[:stylesheet])
+    @content = @stylesheet.code
+
     respond_to do |format|
       format.css
     end
@@ -35,6 +37,8 @@ class RenderController < ApplicationController
 
   def javascript
     @javascript = @site.javascripts.find_by_name!(params[:javascript])
+    @content = @javascript.code
+
     respond_to do |format|
       format.js
     end

@@ -18,7 +18,7 @@ class Image < ActiveRecord::Base
 
   def full_url
     if self.photo_url
-      return "#{site.full_url}/#{self.photo.url}"
+      return "#{site.full_url}/#{self.photo.path}"
     else
       return nil
     end

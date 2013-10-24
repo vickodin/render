@@ -11,5 +11,8 @@
 #
 
 class Stylesheet < ActiveRecord::Base
+  include Mincer
+
   belongs_to :site
+  has_one :cacher, as: :cacheable
 end
