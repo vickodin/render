@@ -6,9 +6,13 @@ module Mincer
   end
 
   def find_form_action(name)
-    if f = self.site.user.forms.find_by_name(name)
+    if f = self.site.forms.find_by_name(name)
       return "http://simplepage.biz/submit/#{f.uuid}"
     end
+  end
+
+  def inser_site_url
+    self.site.full_url
   end
 
   def set_values_map(name, value)
@@ -54,9 +58,14 @@ module Mincer
       self.find_image($1)
     end
 
-    #INFO: form actions
+    # INFO: form actions
     content.gsub!(/\[% *form:([[:word:]\-]+):action *%\]/) do |value|
       self.find_form_action($1)
+    end
+
+    # INFO: Site URL
+    content.gsub!(/\[% *site:url *%\]/) do |value|
+      self.insert_site_url
     end
 
     # INFO: includes
