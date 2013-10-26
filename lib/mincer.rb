@@ -27,20 +27,20 @@ module Mincer
   end
 
   def code
-    if cacher
-      if (cacher.updated_at < site.modified_at) || (cacher.updated_at < self.updated_at)
+    if self.cacher
+      if (self.cacher.updated_at < site.modified_at) || (self.cacher.updated_at < self.updated_at)
         self.compile
       end
     else
       self.compile
     end
-    cacher.content
+    self.cacher.content
   end
 
   def compile
-    self.cacher = Cacher.new unless cacher
-    cacher.content = self.parser([], nil, self.content)
-    cacher.save
+    self.cacher = Cacher.new unless self.cacher
+    self.cacher.content = self.parser([], nil, self.content)
+    self.cacher.save
   end
 
   def parser stack, segment, content
