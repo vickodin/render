@@ -26,6 +26,8 @@ class Site < ActiveRecord::Base
   has_many :layouts
   has_many :images
 
+  has_and_belongs_to_many :forms, :conditions => proc { "forms.user_id = #{self.user_id}" }, uniq: true
+
   def full_name
     if self.own_domain.blank?
       self.name + '.' + self.domain.name

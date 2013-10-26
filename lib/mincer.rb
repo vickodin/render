@@ -11,7 +11,7 @@ module Mincer
     end
   end
 
-  def inser_site_url
+  def insert_site_url
     self.site.full_url
   end
 
@@ -28,7 +28,7 @@ module Mincer
 
   def code
     if cacher
-      if cacher.updated_at < site.modified_at
+      if (cacher.updated_at < site.modified_at) || (cacher.updated_at < self.updated_at)
         self.compile
       end
     else
