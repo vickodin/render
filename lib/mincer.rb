@@ -40,6 +40,7 @@ module Mincer
   def compile
     self.cacher = Cacher.new unless cacher
     self.cacher.content = self.parser([], nil, self.content)
+    self.cacher.save
     self.cacher.touch
   end
 
