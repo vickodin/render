@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131025044918) do
+ActiveRecord::Schema.define(:version => 20131029134740) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -67,6 +67,32 @@ ActiveRecord::Schema.define(:version => 20131025044918) do
 
   add_index "cachers", ["cacheable_type", "cacheable_id"], :name => "index_cachers_on_cacheable_type_and_cacheable_id"
 
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "documents", :force => true do |t|
+    t.integer  "site_id"
+    t.string   "name"
+    t.string   "attachment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "documents", ["site_id"], :name => "index_documents_on_site_id"
+
   create_table "domains", :force => true do |t|
     t.string   "name"
     t.datetime "created_at", :null => false
@@ -100,7 +126,7 @@ ActiveRecord::Schema.define(:version => 20131025044918) do
     t.integer "site_id"
   end
 
-  add_index "forms_sites", ["form_id", "site_id"], :name => "index_forms_sites_on_form_id_and_site_id", :unique => true
+  add_index "forms_sites", ["form_id", "site_id"], :name => "index_forms_sites_on_form_id_and_site_id"
 
   create_table "images", :force => true do |t|
     t.string   "name"
@@ -176,8 +202,9 @@ ActiveRecord::Schema.define(:version => 20131025044918) do
     t.string   "own_domain",  :default => "",                    :null => false
     t.text     "more"
     t.boolean  "compress",    :default => true
-    t.datetime "modified_at", :default => '2013-10-19 06:44:24', :null => false
+    t.datetime "modified_at", :default => '2013-09-30 06:36:37', :null => false
     t.boolean  "public",      :default => false,                 :null => false
+    t.boolean  "active",      :default => true,                  :null => false
   end
 
   add_index "sites", ["domain_id"], :name => "index_sites_on_domain_id"
@@ -216,6 +243,18 @@ ActiveRecord::Schema.define(:version => 20131025044918) do
 
   add_index "templates", ["site_id", "name"], :name => "index_templates_on_site_id_and_name", :unique => true
   add_index "templates", ["site_id"], :name => "index_templates_on_site_id"
+
+  create_table "themes", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "site_id"
+    t.string   "screenshot"
+    t.boolean  "active",      :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "themes", ["site_id"], :name => "index_themes_on_site_id"
 
   create_table "traffics", :force => true do |t|
     t.integer  "site_id"

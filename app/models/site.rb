@@ -13,6 +13,7 @@
 #  compress    :boolean          default(TRUE)
 #  modified_at :datetime         default(2013-09-30 06:36:37 UTC), not null
 #  public      :boolean          default(FALSE), not null
+#  active      :boolean          default(TRUE), not null
 #
 
 class Site < ActiveRecord::Base
