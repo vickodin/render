@@ -25,6 +25,7 @@ class Site < ActiveRecord::Base
   has_many :templates
   has_many :layouts
   has_many :images
+  has_many :documents
 
   has_and_belongs_to_many :forms, :conditions => proc { "forms.user_id = #{self.user_id}" }, uniq: true
 

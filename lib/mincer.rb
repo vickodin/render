@@ -5,6 +5,12 @@ module Mincer
     end
   end
 
+  def find_file(name)
+    if i = self.site.documents.find_by_name(name)
+      return i.full_url
+    end
+  end
+
   def find_form_action(name)
     if f = self.site.forms.find_by_name(name)
       return "http://simplepage.biz/submit/#{f.uuid}"
@@ -55,8 +61,13 @@ module Mincer
     end
 
     # INFO: images includes
-    content.gsub!(/\[% *image:([[:word:]\-]+) *%\]/) do |value|
+    content.gsub!(/\[% *image:(.+?) *%\]/) do |value|
       self.find_image($1)
+    end
+
+    # INFO: files
+    content.gsub!(/\[% *file:(.+?) *%\]/) do |value|
+      self.find_file($1)
     end
 
     # INFO: form actions
