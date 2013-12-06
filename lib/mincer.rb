@@ -6,9 +6,28 @@ module Mincer
   end
 
   def find_file(name)
-    if i = self.site.documents.find_by_name(name)
-      return i.full_url
+    names = name.split('/')
+    last_file = nil
+    parent_id = nil
+
+    names.each do |one|
+      if i = find_one_file(one, parent_id)
+        last_file = i
+        parent_id = i.id
+      else
+        return nil
+      end
     end
+
+    if last_file
+      return last_file.full_url
+    else
+      return nil
+    end
+  end
+
+  def find_one_file(name, parent_id = nil)
+    self.site.documents.where(name: name, parent_id: parent_id).first
   end
 
   def find_form_action(name)
