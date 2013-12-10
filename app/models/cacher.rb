@@ -12,4 +12,8 @@
 
 class Cacher < ActiveRecord::Base
   belongs_to :cacheable, polymorphic: true
+
+  def expired?
+    (self.updated_at < cacheable.site.modified_at) || (self.updated_at < cacheable.updated_at)
+  end
 end

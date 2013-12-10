@@ -52,11 +52,7 @@ module Mincer
   end
 
   def code
-    if cacher
-      if (cacher.updated_at < site.modified_at) || (cacher.updated_at < self.updated_at)
-        self.compile
-      end
-    else
+    if (cacher && cacher.expired?) || !cacher
       self.compile
     end
     cacher.content
