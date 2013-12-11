@@ -7,7 +7,7 @@ module Subdomain
   rescue
     #
   end
-  
+
   def self.position
     @position
   end

@@ -62,7 +62,7 @@ class RenderController < ApplicationController
         return redirect_to "http://#{@site.own_domain}#{request.path}"
       end
     else
-      @site = Site.find_by_own_domain!(request.domain)
+      @site = Site.find_by_own_domain!(request.subdomain.to_s.blank? ? request.domain : "#{request.subdomain}.#{request.domain}")
     end
   end
 end
