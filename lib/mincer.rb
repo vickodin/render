@@ -5,6 +5,36 @@ module Mincer
     end
   end
 
+  def find_template(name)
+    # self.site.templates.find_by_name($1)
+  end
+
+  def find_entity(name, klass = :file)
+    names = name.split('/')
+    last_entity = nil
+    parent_id   = nil
+
+    names.each do |one|
+      if i = (klass == :file ? find_one_file(one, parent_id) : find_one_template(one, parent_id) )
+        last_entity = i
+        parent_id = i.id
+      else
+        return nil
+      end
+    end
+
+    if last_entity
+      if klass == :file
+        return last_entity.full_url
+      else
+        return last_entity
+      end
+    else
+      return nil
+    end
+  end
+
+=begin
   def find_file(name)
     names = name.split('/')
     last_file = nil
@@ -25,9 +55,14 @@ module Mincer
       return nil
     end
   end
+=end
 
   def find_one_file(name, parent_id = nil)
     self.site.documents.where(name: name, parent_id: parent_id).first
+  end
+
+  def find_one_template(name, parent_id = nil)
+    self.site.templates.where(name: name, parent_id: parent_id).first
   end
 
   def find_form_action(name)
@@ -82,7 +117,7 @@ module Mincer
 
     # INFO: files
     content.gsub!(/\[% *file:(.+?) *%\]/) do |value|
-      self.find_file($1)
+      self.find_entity($1, :file)
     end
 
     # INFO: form actions
@@ -97,7 +132,8 @@ module Mincer
 
     # INFO: includes
     content.gsub!(/\s*\[% *include +['"]?(.+?)['"]? *%\]\s*/) do |template|
-      self.parser(stack.push(segment), $1, @t.content) if @t = self.site.templates.find_by_name($1)
+      #self.parser(stack.push(segment), $1, @t.content) if @t = self.site.templates.find_by_name($1)
+      self.parser(stack.push(segment), $1, @t.content) if @t = self.find_entity($1, :template)
     end
 
     # INFO: layouts
