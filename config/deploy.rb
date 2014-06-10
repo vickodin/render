@@ -15,8 +15,8 @@ set :use_sudo, false
 set :rvm_ruby_string, 'ruby-2.0.0-p195@render'
 set :rvm_type, :user
 
-set :hostingserver, "simplepage"
-set :user,          "devel"
+set :hostingserver, "picfield.com"
+set :user,          "vick"
 set :port,          22
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
@@ -25,7 +25,7 @@ set :branch,      "master"
 
 # Deploy via github
 set :deploy_via, :remote_cache
-set :deploy_to, "/home/devel/simplepage.biz/#{application}"
+set :deploy_to, "/home/vhosts/simplepage.biz/#{application}"
 
 set :shared_files,  %w(config/database.yml config/config.yml)
 
